@@ -7,7 +7,7 @@ public class PlayerShoot : MonoBehaviour
     public Transform arrowShoot; //shooting point (where the arrow where be drawn upon) where arrow spawns
     public float arrowSpeed = 10f; //arrow speed
 
-    private GameObject currentArrow;
+    public GameObject currentArrow;
 
 
     // Update is called once per frame
@@ -24,13 +24,19 @@ public class PlayerShoot : MonoBehaviour
     {
         //spawns a copy of the arrow prefab at the arrowShoot position create arrow
         currentArrow = Instantiate(arrowPrefab, arrowShoot.position, Quaternion.identity);
+        //ignore collision between arrow and player
+        CapsuleCollider2D playerCollider = GetComponent<CapsuleCollider2D>();
+        Collider2D arrowCollider = currentArrow.GetComponent<Collider2D>();
+        Physics2D.IgnoreCollision(arrowCollider, playerCollider);
         //gets the physics component from rigidbody to manipulate the arrow
         Rigidbody2D rb = currentArrow.GetComponent<Rigidbody2D>();
+        Vector3 mouseScreenPos = Input.mousePosition;
+        mouseScreenPos.z = -Camera.main.transform.position.z;
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
         //retrieves info about mouse cursor on the game world where the position is converted into game coordinates
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 direction = (mouseWorldPos - arrowShoot.position).normalized;
         //direction from shoot point to mouse
-        Vector2 direction = mousePosition - (Vector2)arrowShoot.position;
-        direction.Normalize();
+
         //launch arrow
         rb.linearVelocity = direction * arrowSpeed;
     }
