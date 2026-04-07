@@ -3,9 +3,13 @@ using UnityEngine;
 public class Arrow : MonoBehaviour
 {
 
-    public float lifeTime = 5f; // Arrow exists for 3 seconds
+    public float lifeTime = 4f; // Arrow exists for 4 seconds
     private Rigidbody2D rb;
     private bool canHitPlayer = false; // starts false!
+
+    public AudioClip ricochetSound;
+    public AudioClip hurtSound;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -13,10 +17,9 @@ public class Arrow : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         // Destroy arrow after a few seconds
         Destroy(gameObject, lifeTime);
-        // wait 0.2 seconds before arrow can hurt player
         Invoke("EnablePlayerHit", 0.2f);
     }
-  
+
     void Update()
     {
         // rotate arrow to face movement direction
@@ -25,6 +28,7 @@ public class Arrow : MonoBehaviour
             float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
+
     }
 
     void OnDestroy()
@@ -36,7 +40,6 @@ public class Arrow : MonoBehaviour
             player.currentArrow = null;
         }
     }
-
     void EnablePlayerHit()
     {
         canHitPlayer = true;
@@ -47,8 +50,8 @@ public class Arrow : MonoBehaviour
         if (collision.gameObject.CompareTag("Player") && canHitPlayer)
         {
             FindAnyObjectByType<GameHp>().LoseLife();
+            AudioSource.PlayClipAtPoint(hurtSound, transform.position);
             Destroy(gameObject);
         }
     }
-
 }

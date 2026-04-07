@@ -180,3 +180,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Arrow
   lifeTime: 3
+  ricochetSound: {fileID: 0}
+  hurtSound: {fileID: 8300000, guid: 2600554083ecc1949b70f5b61abab08b, type: 3}

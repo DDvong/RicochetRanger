@@ -2,11 +2,13 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     public float moveSpeed = 5f;
+    public AudioClip grassSound;
+
     private Animator animator;
     private SpriteRenderer sr;
     private Rigidbody2D rb;
+    
 
     void Start()
     {
@@ -21,7 +23,13 @@ public class PlayerMovement : MonoBehaviour
         float moveInput = Input.GetAxisRaw("Horizontal");   
         //move player
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+            
         animator.SetFloat("Speed", Mathf.Abs(moveInput));
+
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
+        {
+            AudioSource.PlayClipAtPoint(grassSound, transform.position);
+        }
 
         //flip sprite left and right
         if (moveInput < 0)
