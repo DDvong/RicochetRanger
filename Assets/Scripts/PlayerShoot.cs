@@ -2,17 +2,16 @@ using UnityEngine;
 
 public class PlayerShoot : MonoBehaviour
 {
-    public GameObject arrowPrefab; //spawning arrows  
-    public Transform arrowShoot; //shooting point (where the arrow where be drawn upon) where arrow spawns
+    public GameObject arrowPrefab; //spawning arrow 
+    public Transform arrowShoot; //shooting point 
     public float arrowSpeed = 15f; //arrow speed
 
-    public GameObject currentArrow;
-    public AudioClip shootSound;
+    public GameObject currentArrow; //tracks arrow deployed
+    public AudioClip shootSound; //firing sound
 
-    // Update is called once per frame
     void Update()
     {
-        //left mouse button clicked
+        //left mouse button clicked and if theres not an arrow on the screen
         if (Input.GetMouseButtonDown(0) && currentArrow == null)
         {
             Shoot();
@@ -20,23 +19,23 @@ public class PlayerShoot : MonoBehaviour
     }
 
     void Shoot()
-    {
-        currentArrow = Instantiate(arrowPrefab, arrowShoot.position, Quaternion.identity);
-        AudioSource.PlayClipAtPoint(shootSound, transform.position);
-
-        CapsuleCollider2D playerCollider = GetComponent<CapsuleCollider2D>();
+    {   //creates arrow at the spawn point position
+        currentArrow = Instantiate(arrowPrefab, arrowShoot.position, Quaternion.identity); 
+        AudioSource.PlayClipAtPoint(shootSound, transform.position); //plays shooting sound at transform position
+        //ignores collision with the arrow and player
+        CapsuleCollider2D playerCollider = GetComponent<CapsuleCollider2D>(); 
         Collider2D arrowCollider = currentArrow.GetComponent<Collider2D>();
         Physics2D.IgnoreCollision(arrowCollider, playerCollider);
 
-        Rigidbody2D rb = currentArrow.GetComponent<Rigidbody2D>();
+        Rigidbody2D rb = currentArrow.GetComponent<Rigidbody2D>(); //get physics component for any arrow deployed
 
-        // get mouse position in world
+        //convert mouse position to game position 
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        // direction from player to mouse
+        //calculate direction by subtracting the player's position from the mouse position
         Vector2 direction = (mouseWorldPos - arrowShoot.position).normalized;
 
-        // launch arrow
+        //arrow launched based on speed at specific direction
         rb.linearVelocity = direction * arrowSpeed;
     }
 }
